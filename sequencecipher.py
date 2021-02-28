@@ -72,10 +72,10 @@ def buildSequence(sequenceText):
 
     return nextItem
 
-def encrypt(text, sequence, groupSequence, newCharacterEvaluator):
+def encrypt(text, sequence, groupSequence, characterEvaluator):
   
-    if(newCharacterEvaluator == None):
-        newCharacterEvaluator = lambda text,index,shift : chr((ord(text[index])+shift)%96+32)
+    if(characterEvaluator == None):
+        characterEvaluator = lambda character, shift : chr((ord(character)-32+shift)%95+32)
 
     sequenceValues = []
     groupSequenceValues = []
@@ -87,7 +87,7 @@ def encrypt(text, sequence, groupSequence, newCharacterEvaluator):
         shift = sequence(sequenceValues)
         sequenceValues.append(abs(shift))
         for i in range(0,group):
-            output += newCharacterEvaluator(text, index, shift)  
+            output += characterEvaluator(text[index],shift)
             index+=1
             if(index>=len(text)):
                 break
@@ -100,7 +100,7 @@ def encryptFile(text, sequence, groupSequence):
     file.close()
 
 def decrypt(text, sequence, groupSequence):
-    evaluator = lambda text,index,shift : chr((ord(text[index])-shift+32)%96+32)
+    evaluator = lambda character,shift : chr((ord(character)-32-shift)%95+32)
     encrypt(text, sequence, groupSequence, evaluator)
 
 def decryptFile(text, sequence, groupSequence):
